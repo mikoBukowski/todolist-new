@@ -32,15 +32,15 @@ class TodoList {
     }
 
     public function load_scripts() {
-        $vueDirectory    = join( DIRECTORY_SEPARATOR, [ plugin_dir_url(__FILE__), 'vue', 'dist' ] );
-        wp_register_style( 'backend-vue-style', $vueDirectory . '/app.css' );
-        wp_register_script( 'backend-vue-script', $vueDirectory . '/app.js', [], '1.0.0', true );
+        // $vueDirectory    = join( DIRECTORY_SEPARATOR, [ plugin_dir_url(__FILE__), 'vue', 'dist' ] );
+        // wp_register_style( 'backend-vue-style', $vueDirectory . '/app.css' );
+        // wp_register_script( 'backend-vue-script', $vueDirectory . '/app.js', [], '1.0.0', true );
     }
 
     public function display_plugin_page(){
         //Add Vue.js
-        wp_enqueue_style( 'backend-vue-style' );
-        wp_enqueue_script( 'backend-vue-script' );
+        // wp_enqueue_style( 'backend-vue-style' );
+        // wp_enqueue_script( 'backend-vue-script' );
 
         //Return to display
         require_once 'templates/todolist-plugin-admin.php';
