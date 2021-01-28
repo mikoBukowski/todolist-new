@@ -1,1 +1,1 @@
-<br>Siema, tu mordziasty pojawi się cały front</br>
+<br>Siema, tu pojawi się cały front</br>
