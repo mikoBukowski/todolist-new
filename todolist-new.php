@@ -29,7 +29,11 @@ class TodoList {
         // Register hook to add a menu to the admin page as well as ajax scripts 
         add_action('admin_menu', [ $this, 'add_admin_menu' ]);
         add_action('admin_enqueue_scripts', [ $this, 'load_scripts' ]);
+        
         add_action( 'wp_ajax_my_action',[$this, 'my_action']);
+        
+        register_activation_hook( __FILE__, array( 'ToDoListActivate', 'activate' ) );
+        register_deactivation_hook( __FILE__, array( 'ToDoListDeactivate', 'deactivate' ) );
 
         //TODO add_actions responsible for crud operations
     }
@@ -47,13 +51,19 @@ class TodoList {
             // Only applies to dashboard panel
             return;
         }
+        wp_enqueue_script('ajax-script', plugins_url( '/js/app.js', __FILE__ ), array('jquery'));
 
-       wp_enqueue_script( 'ajax-script', plugins_url( '/js/app.js', __FILE__ ), array('jquery')
-    );
         wp_localize_script( 'ajax-script', 'ajax_object',
         array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234 ));
     }
+    
+    public function activate_plugin(){
+        require_once plugin_dir_path( __FILE__ ) . 'includes/todo-list-activate.php';
+        register_activation_hook( __FILE__, array( 'ToDoListActivate', 'activate' ) );
 
+        require_once plugin_dir_path( __FILE__ ) . 'includes/todo-list-deactivate.php';
+        register_deactivation_hook( __FILE__, array( 'ToDoListDeactivate', 'deactivate' ) );
+    }
     public function display_plugin_page(){
         //Return to display
         require_once 'templates/todolist-plugin-admin.php';
