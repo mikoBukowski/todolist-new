@@ -32,8 +32,8 @@ class TodoList {
         
         add_action( 'wp_ajax_my_action',[$this, 'my_action']);
         
-        register_activation_hook( __FILE__, array( 'ToDoListActivate', 'activate' ) );
-        register_deactivation_hook( __FILE__, array( 'ToDoListDeactivate', 'deactivate' ) );
+        register_activation_hook( __FILE__, [ $this, 'activate_plugin']);
+        register_deactivation_hook( __FILE__, [ $this, 'deactivate_plugin']);
 
         //TODO add_actions responsible for crud operations
     }
@@ -56,14 +56,7 @@ class TodoList {
         wp_localize_script( 'ajax-script', 'ajax_object',
         array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234 ));
     }
-    
-    public function activate_plugin(){
-        require_once plugin_dir_path( __FILE__ ) . 'includes/todo-list-activate.php';
-        register_activation_hook( __FILE__, array( 'ToDoListActivate', 'activate' ) );
 
-        require_once plugin_dir_path( __FILE__ ) . 'includes/todo-list-deactivate.php';
-        register_deactivation_hook( __FILE__, array( 'ToDoListDeactivate', 'deactivate' ) );
-    }
     public function display_plugin_page(){
         //Return to display
         require_once 'templates/todolist-plugin-admin.php';
@@ -81,6 +74,31 @@ class TodoList {
         );
     }
 
+    public function activate_plugin(){
+        flush_rewrite_rules();
+
+        global $table_prefix, $wpdb;
+        $table_name = 'todolist_new';
+        $dbtable_name = $table_prefix . $table_name;
+    
+        if ($wpdb->get_var( "SHOW TABLES LIKE '{$dbtable_name}'" ) != $dbtable_name) 
+            {
+                $sql = "CREATE TABLE IF NOT EXISTS `" . $dbtable_name . "`  ( ";
+                $sql .= "  `id`  int(11)   NOT NULL auto_increment, ";
+                $sql .= "  `created_user_id` int(11) NOT NULL, ";
+                $sql .= "  `task` text NOT NULL, ";
+                $sql .= "  `status` tinyint(1) NOT NULL DEFAULT '0', ";
+                $sql .= "  `priority` int(11) NOT NULL DEFAULT '0', ";
+                $sql .= "  PRIMARY KEY `id` (`id`) ";
+                $sql .= ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ";
+                require_once( ABSPATH . '/wp-admin/includes/upgrade.php' );
+                dbDelta( $sql );
+            }
+    }       
+
+    public function deactivate_plugin(){
+        flush_rewrite_rules();
+    }
 }
 new TodoList();
 
