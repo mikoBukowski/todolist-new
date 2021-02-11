@@ -26,22 +26,35 @@ class TodoList {
     }
 
     private function register_hooks() {
-        // Register hook to add a menu to the admin page as well as vue scripts
+        // Register hook to add a menu to the admin page as well as ajax scripts 
         add_action('admin_menu', [ $this, 'add_admin_menu' ]);
         add_action('admin_enqueue_scripts', [ $this, 'load_scripts' ]);
+        add_action( 'wp_ajax_my_action',[$this, 'my_action']);
+
+        //TODO add_actions responsible for crud operations
     }
 
-    public function load_scripts() {
-        // $vueDirectory    = join( DIRECTORY_SEPARATOR, [ plugin_dir_url(__FILE__), 'vue', 'dist' ] );
-        // wp_register_style( 'backend-vue-style', $vueDirectory . '/app.css' );
-        // wp_register_script( 'backend-vue-script', $vueDirectory . '/app.js', [], '1.0.0', true );
+    public function my_action() {
+        global $wpdb; // this is how you get access to the database
+	    $whatever = intval( $_POST['whatever'] );
+	    $whatever += 10;
+        echo $whatever;
+	    wp_die(); // this is required to terminate immediately and return a proper response
+    }
+
+    public function load_scripts($hook) {
+        if( 'index.php' != $hook ) {
+            // Only applies to dashboard panel
+            return;
+        }
+
+       wp_enqueue_script( 'ajax-script', plugins_url( '/js/app.js', __FILE__ ), array('jquery')
+    );
+        wp_localize_script( 'ajax-script', 'ajax_object',
+        array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234 ));
     }
 
     public function display_plugin_page(){
-        //Add Vue.js
-        // wp_enqueue_style( 'backend-vue-style' );
-        // wp_enqueue_script( 'backend-vue-script' );
-
         //Return to display
         require_once 'templates/todolist-plugin-admin.php';
     }
