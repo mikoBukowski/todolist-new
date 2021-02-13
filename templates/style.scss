@@ -1,0 +1,108 @@
+$background-color: #ffffff;
+$text-color: #91959c;
+$line-color: #eaeef0;
+$hover-color: #f3f3f3;
+$shadow-color: #bbbaba;
+$red-lines: #f3e6e3;
+
+@font-face {
+  font-family: 'Open Sans', sans-serif;
+  src: url(/templates/font.ttf);
+}
+/*------------------------------------*\
+  #SETTINGS Global
+\*------------------------------------*/
+
+* {
+  font-family: 'Open Sans', sans-serif;
+}
+.container {
+  &-out { // Background of the list
+    height:           100vh;
+    display:           flex;
+    align-items:     center;
+    justify-content: center;
+  }
+  &-in { // List itself
+    background-color: $background-color;
+    min-width:  25em;
+    width:      auto;
+    height:     auto;
+    padding:       0;
+    box-shadow: 0 0.1em 0.3em $shadow-color;
+  }
+}
+
+
+
+
+
+/*------------------------------------*\
+  #TODO LIST
+\*------------------------------------*/
+
+.list {
+  color:                   $text-color;
+  font-size:                     1.3em;
+  padding:                           0;
+  margin:                            0;
+  width:                          auto;
+  font-family: 'Open Sans', sans-serif;
+  border:          1px solid #dedede;
+  & .item {
+    list-style: none;
+    border-bottom: 1px solid $line-color;
+    height:     auto;
+    padding: 0.6em 0;
+    margin:        0;
+    &-input {
+      padding:     0;
+      background-color: $hover-color;
+    }
+    &-checkbox {
+      display:          inline;
+      padding:          0.6em 0 0.6em 0.6em;
+      border-right: 0.06em solid $red-lines;
+      margin-right:     0.2em;
+    }
+    &-text {
+      display: inline;
+      border:    none;
+      padding:  0.6em;
+      border-left: 0.06em solid $red-lines;
+    }
+  }
+}
+
+.list-hover:hover { // Color on hover.
+  background-color: $hover-color;
+  -webkit-transition: all 0.2s;
+  -moz-transition:    all 0.2s;
+  -ms-transition:     all 0.2s;
+  -o-transition:      all 0.2s;
+}
+
+.input {
+  &-out {
+    border-left: 0.06em solid $red-lines;
+    padding: 0.6em 0;
+  }
+  &-in {
+    padding: 0;
+    background-color: $hover-color;
+    display: inline;
+    border:    none;
+    padding:  0.6em;
+    font-size:  1em;
+    width:     18em;
+  }
+}
+
+.trash { // Trash icon.
+  display:       none;
+  float:        right;
+  margin-right: 0.6em;
+}
+.list-hover:hover .trash {
+  display:      block;
+}

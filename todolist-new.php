@@ -27,22 +27,21 @@ class TodoList {
 
     private function register_hooks() {
         // Register hook to add a menu to the admin page as well as ajax scripts 
-        add_action('admin_menu', [ $this, 'add_admin_menu' ]);
-        add_action('admin_enqueue_scripts', [ $this, 'load_scripts' ]);
+        add_action('admin_menu', [$this, 'add_admin_menu']);
+        add_action('admin_enqueue_scripts', [$this, 'load_scripts']);
         
-        add_action( 'wp_ajax_my_action',[$this, 'my_action']);
+        add_action('wp_ajax_get_tasks', [$this, 'get_tasks']);
+        add_action('wp_ajax_add_tasks', [$this, 'add_tasks']);
+        add_action('wp_ajax_edit_tasks', [$this, 'edit_tasks']);
+        add_action('wp_ajax_remove_tasks', [$this, 'remove_tasks']);
+        add_action('wp_ajax_check_tasks', [$this, 'check_tasks']);
         
-        register_activation_hook( __FILE__, [ $this, 'activate_plugin']);
-        register_deactivation_hook( __FILE__, [ $this, 'deactivate_plugin']);
-
-        //TODO add_actions responsible for crud operations
+        register_activation_hook(__FILE__, [$this, 'activate_plugin']);
+        register_deactivation_hook(__FILE__, [$this, 'deactivate_plugin']);
     }
 
-    public function my_action() {
+    public function get_tasks() {
         global $wpdb; // this is how you get access to the database
-	    $whatever = intval( $_POST['whatever'] );
-	    $whatever += 10;
-        echo $whatever;
 	    wp_die(); // this is required to terminate immediately and return a proper response
     }
 

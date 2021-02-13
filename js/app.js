@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
 
     var data = {
-        'action': 'my_action',
+        'action': 'get_tasks',
         'whatever': 1234
     };
 
