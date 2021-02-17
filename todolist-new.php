@@ -42,6 +42,9 @@ class TodoList {
 
     public function get_tasks() {
         global $wpdb; // this is how you get access to the database
+	    $whatever = intval( $_POST['whatever'] );
+	    $whatever += 10;
+        echo $whatever;
 	    wp_die(); // this is required to terminate immediately and return a proper response
     }
 
@@ -50,7 +53,7 @@ class TodoList {
             // Only applies to dashboard panel
             return;
         }
-        wp_enqueue_script('ajax-script', plugins_url( '/js/app.js', __FILE__ ), array('jquery'));
+        wp_enqueue_script('ajax-script', plugins_url( 'assets/js/app.js', __FILE__ ), array('jquery'));
 
         wp_localize_script( 'ajax-script', 'ajax_object',
         array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234 ));
