@@ -1,0 +1,39 @@
+{
+  "name": "todolist-new",
+  "version": "1.0.0",
+  "description": "Simple todolist app ",
+  "main": "index.js",
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
+  "scripts": {
+    "watch": "webpack --mode=development --watch --config webpack-config.js",
+    "build": "webpack --mode=production --config webpack-config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Masanohashi9/todolist-new.git"
+  },
+  "author": "Mikołaj Bukowski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Masanohashi9/todolist-new/issues"
+  },
+  "homepage": "https://github.com/Masanohashi9/todolist-new#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.12.16",
+    "@babel/core": "^7.12.16",
+    "@babel/preset-env": "^7.12.16",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^3.5.3",
+    "file-loader": "^6.0.0",
+    "lodash": "^4.17.20",
+    "sass": "^1.26.5",
+    "sass-loader": "^8.0.2",
+    "style-loader": "^1.2.1",
+    "webpack": "^5.22.0",
+    "webpack-cli": "^4.5.0"
+  }
+}
