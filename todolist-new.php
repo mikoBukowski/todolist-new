@@ -41,8 +41,6 @@ class TodoList {
         register_deactivation_hook(__FILE__, [$this, 'deactivate_plugin']);
     }
 
-   
-
     public function get_tasks() {
         global $wpdb; // this is how you get access to the database
 	    $whatever = intval( $_POST['whatever'] );
@@ -67,14 +65,13 @@ class TodoList {
         wp_register_script( 'frontend-script', plugins_url( 'assets/js/frontend.js', __FILE__ ), [ 'jquery' ], '11272018' );
 		wp_enqueue_script( 'frontend-script' );
     }
-    
+
     public function backend_script() {
         wp_register_script( 'backend-script', plugins_url( 'assets/js/backend.js', __FILE__ ), [ 'jquery' ], '11272018' );
 		wp_enqueue_script( 'backend-script' );
     }
 
     public function display_plugin_page() {
-        //Return to display
         require_once 'src/frontend/template.php';
     }
 
