@@ -37,6 +37,7 @@ class TodoList {
         add_action('wp_ajax_remove_tasks', [$this, 'remove_tasks']);
         add_action('wp_ajax_check_tasks', [$this, 'check_tasks']);
         
+        //__FILE__ might be redundant 
         register_activation_hook(__FILE__, [$this, 'activate_plugin']);
         register_deactivation_hook(__FILE__, [$this, 'deactivate_plugin']);
     }
