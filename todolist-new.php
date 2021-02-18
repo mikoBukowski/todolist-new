@@ -53,17 +53,17 @@ class TodoList {
             // Only applies to dashboard panel
             return;
         }
+        
+        wp_register_script( 'backend-script', plugins_url( 'asssets/js/backend.js', __FILE__ ), [ 'jquery' ], '11272018' );
+		wp_enqueue_script( 'backend-script' );
 
-        //TO BE ALTERED
-        // wp_enqueue_script('ajax-script', plugins_url( 'assets/js/app.js', __FILE__ ), array('jquery'));
-        // //TO BE ALTERED
-        // wp_localize_script( 'ajax-script', 'ajax_object',
-        // array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234 ));
+        wp_register_script( 'frontend-script', plugins_url( 'asssets/js/frontend.js', __FILE__ ), [ 'jquery' ], '11272018' );
+		wp_enqueue_script( 'frontend-script' );
     }
 
     public function display_plugin_page(){
         //Return to display
-        require_once 'src/components/template.php';
+        require_once 'src/frontend/template.php';
     }
 
     public function add_admin_menu() {

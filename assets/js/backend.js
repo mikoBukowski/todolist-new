@@ -1,0 +1,1 @@
+jQuery(document).ready((function(a){jQuery.post(ajaxurl,{action:"get_tasks",whatever:1234},(function(a){alert("Spierdalaj"+a)}))}));

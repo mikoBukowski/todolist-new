@@ -1,5 +1,3 @@
-import './style.scss';
-
 jQuery(document).ready(function($) {
 
     var data = {

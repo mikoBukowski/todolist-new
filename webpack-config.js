@@ -3,7 +3,8 @@ const path = require( 'path' );
 const config = {
 
 	entry: {
-		app: './src/components/app.js'
+		frontend: './src/frontend/app.js',
+        backend: './src/backend/app.js'
 	},
 
 	output: {
