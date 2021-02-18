@@ -26,10 +26,11 @@ class TodoList {
     }
 
     private function register_hooks() {
-        // Register hook to add a menu to the admin page as well as ajax scripts 
         add_action('admin_menu', [$this, 'add_admin_menu']);
-        add_action('admin_enqueue_scripts', [$this, 'load_scripts']);
         
+        add_action('admin_enqueue_scripts', [$this, 'frontend_script']);
+		add_action('admin_enqueue_scripts', [$this, 'backend_script']);
+
         add_action('wp_ajax_get_tasks', [$this, 'get_tasks']);
         add_action('wp_ajax_add_tasks', [$this, 'add_tasks']);
         add_action('wp_ajax_edit_tasks', [$this, 'edit_tasks']);
@@ -40,30 +41,14 @@ class TodoList {
         register_deactivation_hook(__FILE__, [$this, 'deactivate_plugin']);
     }
 
+   
+
     public function get_tasks() {
         global $wpdb; // this is how you get access to the database
 	    $whatever = intval( $_POST['whatever'] );
 	    $whatever += 10;
         echo $whatever;
 	    wp_die(); // this is required to terminate immediately and return a proper response
-    }
-
-    public function load_scripts($hook) {
-        if( 'index.php' != $hook ) {
-            // Only applies to dashboard panel
-            return;
-        }
-        
-        wp_register_script( 'backend-script', plugins_url( 'asssets/js/backend.js', __FILE__ ), [ 'jquery' ], '11272018' );
-		wp_enqueue_script( 'backend-script' );
-
-        wp_register_script( 'frontend-script', plugins_url( 'asssets/js/frontend.js', __FILE__ ), [ 'jquery' ], '11272018' );
-		wp_enqueue_script( 'frontend-script' );
-    }
-
-    public function display_plugin_page(){
-        //Return to display
-        require_once 'src/frontend/template.php';
     }
 
     public function add_admin_menu() {
@@ -77,8 +62,23 @@ class TodoList {
             4
         );
     }
+    
+    public function frontend_script() {
+        wp_register_script( 'frontend-script', plugins_url( 'assets/js/frontend.js', __FILE__ ), [ 'jquery' ], '11272018' );
+		wp_enqueue_script( 'frontend-script' );
+    }
+    
+    public function backend_script() {
+        wp_register_script( 'backend-script', plugins_url( 'assets/js/backend.js', __FILE__ ), [ 'jquery' ], '11272018' );
+		wp_enqueue_script( 'backend-script' );
+    }
 
-    public function activate_plugin(){
+    public function display_plugin_page() {
+        //Return to display
+        require_once 'src/frontend/template.php';
+    }
+
+    public function activate_plugin() {
         flush_rewrite_rules();
 
         global $table_prefix, $wpdb;
@@ -100,7 +100,7 @@ class TodoList {
             }
     }       
 
-    public function deactivate_plugin(){
+    public function deactivate_plugin() {
         flush_rewrite_rules();
     }
 }
