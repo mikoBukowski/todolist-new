@@ -14,7 +14,7 @@
 					</form>
 					
 					<div id="tasks-container">
-						<!-- new tasks   -->
+						<!-- tasks   -->
 					</div>
 				</ul>
 			</div>

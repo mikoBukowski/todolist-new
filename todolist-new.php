@@ -23,11 +23,11 @@ class TodoList {
 
     public function __construct() {
         $this->register_hooks();
+        
     }
 
     private function register_hooks() {
         add_action('admin_menu', [$this, 'add_admin_menu']);
-        
         add_action('admin_enqueue_scripts', [$this, 'frontend_script']);
 		add_action('admin_enqueue_scripts', [$this, 'backend_script']);
 
@@ -37,17 +37,40 @@ class TodoList {
         add_action('wp_ajax_remove_tasks', [$this, 'remove_tasks']);
         add_action('wp_ajax_check_tasks', [$this, 'check_tasks']);
         
-        //__FILE__ might be redundant 
         register_activation_hook(__FILE__, [$this, 'activate_plugin']);
         register_deactivation_hook(__FILE__, [$this, 'deactivate_plugin']);
     }
 
-    public function get_tasks() {
-        global $wpdb; // this is how you get access to the database
-	    $whatever = intval( $_POST['whatever'] );
-	    $whatever += 10;
-        echo $whatever;
-	    wp_die(); // this is required to terminate immediately and return a proper response
+    public function get_tasks(){
+        
+    }
+
+    public function add_tasks() {
+        global $table_prefix, $wpdb;
+		$tablename = 'todolist_new';
+		$todo_list_table = $table_prefix . $tablename;
+		$user_id = get_current_user_id();
+
+		$data_array = array(
+			'id' => $user_id,
+			'title'            => $_POST['task'],
+			'done'          => '0'
+		);
+
+		$wpdb->insert( $todo_list_table, $data_array );
+		wp_die();
+    }
+
+    public function edit_tasks(){
+
+    }
+
+    public function remove_tasks(){
+
+    }
+
+    public function check_tasks(){
+        
     }
 
     public function add_admin_menu() {
@@ -87,10 +110,10 @@ class TodoList {
             {
                 $sql = "CREATE TABLE IF NOT EXISTS `" . $dbtable_name . "`  ( ";
                 $sql .= "  `id`  int(11)   NOT NULL auto_increment, ";
-                $sql .= "  `created_user_id` int(11) NOT NULL, ";
-                $sql .= "  `task` text NOT NULL, ";
-                $sql .= "  `status` tinyint(1) NOT NULL DEFAULT '0', ";
-                $sql .= "  `priority` int(11) NOT NULL DEFAULT '0', ";
+                // $sql .= "  `created_user_id` int(11) NOT NULL, ";
+                $sql .= "  `title` text NOT NULL, ";
+                $sql .= "  `done` tinyint(1) NOT NULL DEFAULT '0', ";
+                // $sql .= "  `priority` int(11) NOT NULL DEFAULT '0', ";
                 $sql .= "  PRIMARY KEY `id` (`id`) ";
                 $sql .= ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ";
                 require_once( ABSPATH . '/wp-admin/includes/upgrade.php' );
