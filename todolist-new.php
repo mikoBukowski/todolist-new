@@ -23,7 +23,7 @@ class TodoList {
 
     public function __construct() {
         $this->register_hooks();
-        
+        // $this->activate_plugin(); do wywołania przy uruchomieniu 
     }
 
     private function register_hooks() {
