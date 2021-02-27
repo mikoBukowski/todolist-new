@@ -189,9 +189,9 @@ class TodoList {
             }
     }       
 
-    public function deactivate_plugin() {
-        flush_rewrite_rules();
-    }
+    // public function deactivate_plugin() {
+    //     flush_rewrite_rules();
+    // }
 }
 new TodoList();
 
