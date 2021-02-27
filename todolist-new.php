@@ -42,35 +42,103 @@ class TodoList {
     }
 
     public function get_tasks(){
-        
+        global $table_prefix, $wpdb;
+		$tablename = 'todolist_new';
+		$todo_list_table = $table_prefix . $tablename;
+
+		$user_id = get_current_user_id();
+
+		$tasks = $wpdb->get_results( "SELECT * FROM {$todo_list_table} WHERE created_user_id = '{$user_id}'" );
+		$tasks = json_encode($tasks);
+
+		echo $tasks;
+
+		wp_die();
     }
 
     public function add_tasks() {
         global $table_prefix, $wpdb;
 		$tablename = 'todolist_new';
 		$todo_list_table = $table_prefix . $tablename;
+
 		$user_id = get_current_user_id();
 
 		$data_array = array(
-			'id' => $user_id,
-			'title'            => $_POST['task'],
-			'done'          => '0'
+			'created_user_id' => $user_id,
+			'task'            => $_POST['task'],
+			'status'          => '0',
+			'priority'        => '0'
 		);
 
 		$wpdb->insert( $todo_list_table, $data_array );
+	
 		wp_die();
     }
 
     public function edit_tasks(){
+        global $table_prefix, $wpdb;
+		$tablename = 'todolist_new';
+		$todo_list_table = $table_prefix . $tablename;
 
+		$task_id = substr( $_POST['task_id'], 5 ); // Select only ID of the task in database.
+		$text = $_POST['text'];
+
+		$where = array(
+			'id' => $task_id
+		);
+
+		$data_array = array(
+			'task' => $text
+		);
+
+		$wpdb->update( $todo_list_table, $data_array, $where );
+
+		wp_die();
     }
 
     public function remove_tasks(){
+        global $table_prefix, $wpdb;
+		$tablename = 'todolist_new';
+		$todo_list_table = $table_prefix . $tablename;
 
+		$task_id = substr( $_POST['task_id'], 6 ); // Select only ID of the task in database.
+
+		$wpdb->delete( $todo_list_table, array( 'id' => $task_id ) );
+
+		wp_die();
     }
 
     public function check_tasks(){
-        
+        global $table_prefix, $wpdb;
+		$tablename = 'todolist_new';
+		$todo_list_table = $table_prefix . $tablename;
+
+		$task_id = $_POST['task_id'];
+		$checked = $_POST['checked'];
+
+		$where = array(
+			'id' => $task_id
+		);
+		
+		if ( $checked == 'checked' ) { // Checked.
+
+			$data_array = array(
+				'status' => '1'
+			);
+
+			$wpdb->update( $todo_list_table, $data_array, $where );
+
+		} elseif ( $checked != 'checked' ) { // Unchecked.
+
+			$data_array = array(
+				'status' => '0'
+			);
+
+			$wpdb->update( $todo_list_table, $data_array, $where );
+
+		}
+		
+		wp_die();
     }
 
     public function add_admin_menu() {
