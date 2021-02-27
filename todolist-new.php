@@ -38,7 +38,7 @@ class TodoList {
         add_action('wp_ajax_check_tasks', [$this, 'check_tasks']);
         
         register_activation_hook(__FILE__, [$this, 'activate_plugin']);
-        register_deactivation_hook(__FILE__, [$this, 'deactivate_plugin']);
+        // register_deactivation_hook(__FILE__, [$this, 'deactivate_plugin']); // pytanie czy to
     }
 
     public function get_tasks(){

@@ -6,12 +6,7 @@
 jQuery(document).ready(function($) {
 
     get_tasks();
-
-
-
     var tasks_container = $('#tasks-container')[0]; // Get tasks container element.
-
-
 
     // Get tasks.
     function get_tasks() {
@@ -84,9 +79,8 @@ jQuery(document).ready(function($) {
             
             },
             error: function() {
-
+                    console.log('ssij mi jajedd dsa');
                     console.log('Error addding task.');
-
             }
         });
 

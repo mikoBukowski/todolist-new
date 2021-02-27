@@ -2,6 +2,14 @@ const path = require( 'path' );
 
 const config = {
 
+	// mode: 'development',
+	watch: true,
+
+	watchOptions: {
+		poll: true,
+		ignored: /node_modules/
+	},
+
 	entry: {
 		frontend: './src/frontend/app.js',
         backend: './src/backend/app.js'
