@@ -66,9 +66,10 @@ jQuery(document).ready(function($) {
     jQuery('#new_task_form').submit(function(event) { // Trigger on submit.
         event.preventDefault();
 
-        var id = document.getElementById('new_task');
+        var id = document.getElementById('new_task').value;//  WORKS
+        
 
-
+    
         jQuery.ajax({
             url: ajaxurl,
             type: 'POST',
