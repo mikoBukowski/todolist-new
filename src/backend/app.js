@@ -66,6 +66,9 @@ jQuery(document).ready(function($) {
     jQuery('#new_task_form').submit(function(event) { // Trigger on submit.
         event.preventDefault();
 
+        var id = document.getElementById('add_task');
+
+
         jQuery.ajax({
             url: ajaxurl,
             type: 'POST',
@@ -79,7 +82,7 @@ jQuery(document).ready(function($) {
             
             },
             error: function() {
-                    console.log('ssij mi jajedd dsa');
+                    console.log(id);
                     console.log('Error addding task.');
             }
         });
