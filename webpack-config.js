@@ -1,4 +1,5 @@
 const path = require( 'path' );
+// const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 
 const config = {
 
@@ -10,6 +11,15 @@ const config = {
 		ignored: /node_modules/
 	},
 
+	// plugins: [
+	// 	new BrowserSyncPlugin({
+	// 		// browse to http://localhost:3000/ during development,
+	// 		// ./public directory is being served
+	// 		host: 'localhost',
+	// 		port: 3000,
+	// 		server: {baseDir: ['public']}
+	// 	  })],
+	
 	entry: {
 		frontend: './src/frontend/app.js',
         backend: './src/backend/app.js'

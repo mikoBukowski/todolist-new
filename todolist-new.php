@@ -23,7 +23,7 @@ class TodoList {
 
     public function __construct() {
         $this->register_hooks();
-        // $this->activate_plugin(); do wywołania przy uruchomieniu 
+        // $this->activate_plugin(); do wywołania przy uruchomieniu ?
     }
 
     private function register_hooks() {
@@ -46,17 +46,17 @@ class TodoList {
 		$tablename = 'todolist_new';
 		$todo_list_table = $table_prefix . $tablename;
 
-		$user_id = get_current_user_id();
+		$id = get_current_user_id();
 
-		$tasks = $wpdb->get_results( "SELECT * FROM {$todo_list_table} WHERE created_user_id = '{$user_id}'" );
+		$tasks = $wpdb->get_results( "SELECT * FROM {$todo_list_table} WHERE id = '{$id}'" );
 		$tasks = json_encode($tasks);
 
 		echo $tasks;
 
 		wp_die();
     }
-
-    public function add_tasks() {
+    //WORKS
+    public function add_tasks() { 
         global $table_prefix, $wpdb;
 		$tablename = 'todolist_new';
 		$todo_list_table = $table_prefix . $tablename;
@@ -64,14 +64,12 @@ class TodoList {
 		$user_id = get_current_user_id();
 
 		$data_array = array(
-			'created_user_id' => $user_id,
-			'task'            => $_POST['task'],
-			'status'          => '0',
-			'priority'        => '0'
+			'id'    => $user_id,
+			'title' => $_POST['task'],
+			'done'  => '0',
 		);
 
-		$wpdb->insert( $todo_list_table, $data_array );
-	
+		$wpdb->insert($todo_list_table, $data_array);
 		wp_die();
     }
 

@@ -1,8 +1,3 @@
-// let title = [];
-
-// document.getElementById("new_task").innerHTML = title.map (v => v); 
-// console.log('dupa');
-
 jQuery(document).ready(function($) {
 
     get_tasks();
@@ -10,7 +5,7 @@ jQuery(document).ready(function($) {
 
     // Get tasks.
     function get_tasks() {
-        
+
         jQuery.ajax({
             url: ajaxurl,
             type: 'POST',
@@ -19,7 +14,9 @@ jQuery(document).ready(function($) {
             }),
             success: function(response) {
 
-                    var tasks = JSON.parse(response);
+                    let tasks = JSON.parse(response);
+                    console.table({tasks});
+
                     tasks.forEach(function(task) {
 
                         if(task['status'] == 1) { // Check if task is done.
@@ -42,54 +39,42 @@ jQuery(document).ready(function($) {
 
             },
             error: function() {
-
+                    console.log('CZEKIT');                    
                     console.log('AJAX error getting tasks.');
 
             }
         });
+
+
     }
 
-
-
-    // Refresh list.
     function refresh() {
-
         tasks_container.innerHTML = ""; // Empty the container before displaying tasks.
-
         get_tasks();
-
     }
-
-
 
     // Add new task.
     jQuery('#new_task_form').submit(function(event) { // Trigger on submit.
         event.preventDefault();
 
-        var id = document.getElementById('new_task').value;//  WORKS
+        var id = document.getElementById('new_task').value;//WORKS
         
-
-    
         jQuery.ajax({
             url: ajaxurl,
             type: 'POST',
             data: {
-                action: 'add_task',
+                action: 'add_tasks',
                 task: $('#new_task').val()
             },
             success: function() {
-
-                    refresh();
-            
+                    refresh(); // - refresh on addition
+                    console.log(id);
+                    $('#new_task_form')[0].reset(); // clear form input
             },
             error: function() {
-                    console.log(id);
                     console.log('Error addding task.');
             }
         });
-
-        $('#new_task_form')[0].reset(); // Clear input in form.
-
     });
 
 
