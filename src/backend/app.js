@@ -13,27 +13,32 @@ jQuery(document).ready(function($) {
                 action: 'get_tasks'
             }),
             success: function(response) {
-
                     let tasks = JSON.parse(response);
                     console.table({tasks});
 
                     tasks.forEach(function(task) {
-
                         // if(task['status'] == 1) { // Check if task is done.
                         //     var status = 'checked';
                         // } else {
                         //     var status = '';
                         // }
 
-                        var listItem = '<li class="item list-hover">' +
-                                            '<label class="item-checkbox" style="padding-right: 4px;">' + // These 4 pixels literally vanished, I don't have the slightest clue what happened.
-                                                '<input class="checkbox" id="' + task['id'] + '" type="checkbox" ' + status + '>' +
-                                            '</label>' +
-                                            '<label class="item-text list-hover" id="task-' + task['id'] + '" contenteditable="true">' + task['title'] + '</label>' +
-                                            '<span class="dashicons dashicons-trash trash" id="trash-' + task['id'] + '"></span>' +
-                                        '</li>';
+                        // var taskName = document.getElementById('new_task').value; 
 
-                        tasks_container.innerHTML += listItem; // Display tasks.
+                        function html(tasks) {
+                            const { id, title, done} = tasks;
+                            return `<li class="item list-hover">
+                            <label class="item-checkbox">
+                                <input class="checkbox" id="' ${id} '" type="checkbox" ${done}>
+                            </label>
+                            <label class="item-text list-hover" id="task-${id}" 
+                                contenteditable="true"> ${title} 
+                            </label>
+                            <span class="dashicons dashicons-trash trash" id="trash-' ${id} '"></span>
+                            </li>`;
+                        }
+
+                        tasks_container.innerHTML += html(tasks); // Display tasks.
                     });
 
             },

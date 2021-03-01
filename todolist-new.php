@@ -61,8 +61,6 @@ class TodoList {
 		$tablename = 'todolist_new';
 		$todo_list_table = $table_prefix . $tablename;
 
-		// $user_id = uniqid();
-
 		$data_array = array(
 			'id'    => $_POST['id'],
 			'title' => $_POST['task'],
