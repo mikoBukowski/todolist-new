@@ -1,3 +1,6 @@
+const { data } = require("browserslist");
+const { template } = require("lodash");
+
 jQuery(document).ready(function($) {
 
     get_tasks();
@@ -13,34 +16,24 @@ jQuery(document).ready(function($) {
                 action: 'get_tasks'
             }),
             success: function(response) {
-                    let tasks = JSON.parse(response);
-                    console.table({tasks});
-
-                    tasks.forEach(function(task) {
-                        // if(task['status'] == 1) { // Check if task is done.
-                        //     var status = 'checked';
-                        // } else {
-                        //     var status = '';
-                        // }
-
-                        // var taskName = document.getElementById('new_task').value; 
-
-                        function html(tasks) {
-                            const { id, title, done} = tasks;
-                            return `<li class="item list-hover">
-                            <label class="item-checkbox">
-                                <input class="checkbox" id="' ${id} '" type="checkbox" ${done}>
-                            </label>
-                            <label class="item-text list-hover" id="task-${id}" 
-                                contenteditable="true"> ${title} 
-                            </label>
-                            <span class="dashicons dashicons-trash trash" id="trash-' ${id} '"></span>
+                    let data = JSON.parse(response);
+        
+                    data.forEach(function(data){
+                        const {id, title, done} = data; 
+                        foo =
+                            `<li class="item list-hover">
+                                <label class="item-checkbox">
+                                    <input class="checkbox" id="${id}" type="checkbox" ${done}>
+                                </label>
+                                
+                                <label class="item-text list-hover" id="task-${id}" 
+                                    contenteditable="true"> ${title}
+                                </label>
+                                <span class="dashicons dashicons-trash trash" id="trash-' ${id} '"></span>
                             </li>`;
-                        }
-
-                        tasks_container.innerHTML += html(tasks); // Display tasks.
+                        
+                        tasks_container.innerHTML += foo;
                     });
-
             },
             error: function() {                  
                     console.log('AJAX error getting tasks.');
