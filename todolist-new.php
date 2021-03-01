@@ -1,10 +1,5 @@
 <?php
 /**
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
- *
  * @since 1.0.0
  * @package todolist-new 
  *
@@ -20,8 +15,11 @@ if (!defined('WPINC')) {
 }
 
 class TodoList {
-
+    
     public function __construct() {
+        global $wpdb, $table_prefix, $db_name;
+        $db_ref = 'todolist_new';
+        $db_name = $table_prefix . $db_name;
         $this->register_hooks();
         // $this->activate_plugin(); do wywołania przy uruchomieniu ?
     }
@@ -57,24 +55,20 @@ class TodoList {
     }
     //DONE
     public function add_tasks() { 
-        global $table_prefix, $wpdb;
-		$tablename = 'todolist_new';
-		$todo_list_table = $table_prefix . $tablename;
-
+		
 		$data_array = array(
 			'id'    => $_POST['id'],
 			'title' => $_POST['task'],
 			'done'  => '0',
 		);
 
-		$wpdb->insert($todo_list_table, $data_array);
+		$GLOBALS['wpdb']->insert($GLOBALS['todo_list_table'], $data_array);
 		wp_die();
     }
 
     public function edit_tasks(){
-        global $table_prefix, $wpdb;
 		$tablename = 'todolist_new';
-		$todo_list_table = $table_prefix . $tablename;
+		$todo_list_table = $GLOBALS['table_prefix'] . $tablename;
 
 		$task_id = substr( $_POST['task_id'], 5 ); // Select only ID of the task in database.
 		$text = $_POST['text'];
@@ -87,27 +81,25 @@ class TodoList {
 			'task' => $text
 		);
 
-		$wpdb->update( $todo_list_table, $data_array, $where );
+		$GLOBALS['wpdb']->update( $todo_list_table, $data_array, $where );
 
 		wp_die();
     }
 
     public function remove_tasks(){
-        global $table_prefix, $wpdb;
 		$tablename = 'todolist_new';
-		$todo_list_table = $table_prefix . $tablename;
+		$todo_list_table = $GLOBALS['table_prefix'] . $tablename;
 
 		$task_id = substr( $_POST['task_id'], 6 ); // Select only ID of the task in database.
 
-		$wpdb->delete( $todo_list_table, array( 'id' => $task_id ) );
+		$GLOBALS['wpdb']->delete( $todo_list_table, array( 'id' => $task_id ) );
 
 		wp_die();
     }
 
     public function check_tasks(){
-        global $table_prefix, $wpdb;
 		$tablename = 'todolist_new';
-		$todo_list_table = $table_prefix . $tablename;
+		$todo_list_table = $GLOBALS['table_prefix'] . $tablename;
 
 		$task_id = $_POST['task_id'];
 		$checked = $_POST['checked'];
@@ -122,7 +114,7 @@ class TodoList {
 				'status' => '1'
 			);
 
-			$wpdb->update( $todo_list_table, $data_array, $where );
+			$GLOBALS['wpdb']->update( $todo_list_table, $data_array, $where );
 
 		} elseif ( $checked != 'checked' ) { // Unchecked.
 
@@ -130,7 +122,7 @@ class TodoList {
 				'status' => '0'
 			);
 
-			$wpdb->update( $todo_list_table, $data_array, $where );
+			$GLOBALS['wpdb']->update( $todo_list_table, $data_array, $where );
 
 		}
 		
@@ -166,18 +158,15 @@ class TodoList {
     public function activate_plugin() {
         flush_rewrite_rules();
 
-        global $table_prefix, $wpdb;
         $table_name = 'todolist_new';
         $dbtable_name = $table_prefix . $table_name;
     
-        if ($wpdb->get_var( "SHOW TABLES LIKE '{$dbtable_name}'" ) != $dbtable_name) 
+        if ($GLOBALS['wpdb']->get_var( "SHOW TABLES LIKE '{$dbtable_name}'" ) != $dbtable_name) 
             {
                 $sql = "CREATE TABLE IF NOT EXISTS `" . $dbtable_name . "`  ( ";
                 $sql .= "  `id`  int(11)   NOT NULL auto_increment, ";
-                // $sql .= "  `created_user_id` int(11) NOT NULL, ";
                 $sql .= "  `title` text NOT NULL, ";
                 $sql .= "  `done` tinyint(1) NOT NULL DEFAULT '0', ";
-                // $sql .= "  `priority` int(11) NOT NULL DEFAULT '0', ";
                 $sql .= "  PRIMARY KEY `id` (`id`) ";
                 $sql .= ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ";
                 require_once( ABSPATH . '/wp-admin/includes/upgrade.php' );
@@ -190,4 +179,3 @@ class TodoList {
     // }
 }
 new TodoList();
-

@@ -1,6 +1,3 @@
-const { data } = require("browserslist");
-const { template } = require("lodash");
-
 jQuery(document).ready(function($) {
 
     get_tasks();
@@ -17,26 +14,25 @@ jQuery(document).ready(function($) {
             }),
             success: function(response) {
                     let data = JSON.parse(response);
-        
                     data.forEach(function(data){
+
                         const {id, title, done} = data; 
                         foo =
                             `<li class="item list-hover">
                                 <label class="item-checkbox">
                                     <input class="checkbox" id="${id}" type="checkbox" ${done}>
                                 </label>
-                                
                                 <label class="item-text list-hover" id="task-${id}" 
                                     contenteditable="true"> ${title}
                                 </label>
-                                <span class="dashicons dashicons-trash trash" id="trash-' ${id} '"></span>
+                                <span class="dashicons dashicons-trash trash" id="trash-'${id}"></span>
                             </li>`;
                         
                         tasks_container.innerHTML += foo;
                     });
             },
             error: function() {                  
-                    console.log('AJAX error getting tasks.');
+                    console.log('get error');
             }
         });
     }
@@ -49,8 +45,6 @@ jQuery(document).ready(function($) {
     // Add new task.
     jQuery('#new_task_form').submit(function(event) { // trigger on submit.
         event.preventDefault();
-
-        // var taskName = document.getElementById('new_task').value; 
         let id = new Date().getUTCMilliseconds();
 
         jQuery.ajax({
@@ -66,7 +60,7 @@ jQuery(document).ready(function($) {
                     // console.log(taskName);
             },
             error: function() {
-                    console.log('Error addding task.');
+                    console.log('add error');
             }
         });
         $('#new_task_form')[0].reset(); // clear form input // moze przenies LATER
@@ -84,7 +78,7 @@ jQuery(document).ready(function($) {
                 checked: $(this).attr('checked')
             },
             error: function() {
-                    console.log('Error updating task status.');
+                    console.log('checkbox error');
             }
         });
     });
@@ -107,7 +101,7 @@ jQuery(document).ready(function($) {
                     text: text,
                 },
                 error: function() {
-                        console.log('Error editing task.');
+                        console.log('edit error');
                 }
             })
         }
@@ -126,7 +120,7 @@ jQuery(document).ready(function($) {
                 refresh();
             },
             error: function() {
-                    console.log('Error deleting task.');
+                    console.log('delete error');
             }
         })
     });
