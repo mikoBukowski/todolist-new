@@ -13,13 +13,14 @@
 if (!defined('WPINC')) {
     die;
 }
+global $wpdb, $table_prefix, $db_name;
+$db_ref = 'todolist_new';
+$db_name = $table_prefix . $db_ref;
 
 class TodoList {
     
     public function __construct() {
-        global $wpdb, $table_prefix, $db_name;
-        $db_ref = 'todolist_new';
-        $db_name = $table_prefix . $db_name;
+        
         $this->register_hooks();
         // $this->activate_plugin(); do wywołania przy uruchomieniu ?
     }
@@ -46,11 +47,10 @@ class TodoList {
 
 		// $id = get_current_user_id();
 
-		$tasks = $wpdb->get_results( "SELECT * FROM {$todo_list_table} " );
+		$tasks = $wpdb->get_results( "SELECT * FROM {$GLOBALS['db_name']} " );
 		$tasks = json_encode($tasks);
 
 		echo $tasks;
-
 		wp_die();
     }
     //DONE
@@ -62,7 +62,7 @@ class TodoList {
 			'done'  => '0',
 		);
 
-		$GLOBALS['wpdb']->insert($GLOBALS['todo_list_table'], $data_array);
+		$GLOBALS['wpdb']->insert($GLOBALS['db_name'], $data_array);
 		wp_die();
     }
 
