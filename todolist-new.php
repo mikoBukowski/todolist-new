@@ -40,31 +40,31 @@ class TodoList {
         register_activation_hook(__FILE__, [$this, 'activate_plugin']);
         // register_deactivation_hook(__FILE__, [$this, 'deactivate_plugin']); // pytanie czy to
     }
-
+    //DONE
     public function get_tasks(){
         global $table_prefix, $wpdb;
 		$tablename = 'todolist_new';
 		$todo_list_table = $table_prefix . $tablename;
 
-		$id = get_current_user_id();
+		// $id = get_current_user_id();
 
-		$tasks = $wpdb->get_results( "SELECT * FROM {$todo_list_table} WHERE id = '{$id}'" );
+		$tasks = $wpdb->get_results( "SELECT * FROM {$todo_list_table} " );
 		$tasks = json_encode($tasks);
 
 		echo $tasks;
 
 		wp_die();
     }
-    //WORKS
+    //DONE
     public function add_tasks() { 
         global $table_prefix, $wpdb;
 		$tablename = 'todolist_new';
 		$todo_list_table = $table_prefix . $tablename;
 
-		$user_id = get_current_user_id();
+		// $user_id = uniqid();
 
 		$data_array = array(
-			'id'    => $user_id,
+			'id'    => $_POST['id'],
 			'title' => $_POST['task'],
 			'done'  => '0',
 		);

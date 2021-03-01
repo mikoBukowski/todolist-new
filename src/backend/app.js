@@ -19,68 +19,63 @@ jQuery(document).ready(function($) {
 
                     tasks.forEach(function(task) {
 
-                        if(task['status'] == 1) { // Check if task is done.
-                            var status = 'checked';
-                        } else {
-                            var status = '';
-                        }
+                        // if(task['status'] == 1) { // Check if task is done.
+                        //     var status = 'checked';
+                        // } else {
+                        //     var status = '';
+                        // }
 
                         var listItem = '<li class="item list-hover">' +
                                             '<label class="item-checkbox" style="padding-right: 4px;">' + // These 4 pixels literally vanished, I don't have the slightest clue what happened.
                                                 '<input class="checkbox" id="' + task['id'] + '" type="checkbox" ' + status + '>' +
                                             '</label>' +
-                                            '<label class="item-text list-hover" id="task-' + task['id'] + '" contenteditable="true">' + task['task'] + '</label>' +
+                                            '<label class="item-text list-hover" id="task-' + task['id'] + '" contenteditable="true">' + task['title'] + '</label>' +
                                             '<span class="dashicons dashicons-trash trash" id="trash-' + task['id'] + '"></span>' +
                                         '</li>';
 
                         tasks_container.innerHTML += listItem; // Display tasks.
-
                     });
 
             },
-            error: function() {
-                    console.log('CZEKIT');                    
+            error: function() {                  
                     console.log('AJAX error getting tasks.');
-
             }
         });
-
-
     }
 
     function refresh() {
-        tasks_container.innerHTML = ""; // Empty the container before displaying tasks.
+        tasks_container.innerHTML = ""; // empty the container before displaying tasks.
         get_tasks();
     }
 
     // Add new task.
-    jQuery('#new_task_form').submit(function(event) { // Trigger on submit.
+    jQuery('#new_task_form').submit(function(event) { // trigger on submit.
         event.preventDefault();
 
-        var id = document.getElementById('new_task').value;//WORKS
-        
+        // var taskName = document.getElementById('new_task').value; 
+        let id = new Date().getUTCMilliseconds();
+
         jQuery.ajax({
             url: ajaxurl,
             type: 'POST',
             data: {
                 action: 'add_tasks',
-                task: $('#new_task').val()
+                task: $('#new_task').val(),
+                id: id, 
             },
             success: function() {
-                    refresh(); // - refresh on addition
-                    console.log(id);
-                    $('#new_task_form')[0].reset(); // clear form input
+                    refresh(); // refresh on addition
+                    // console.log(taskName);
             },
             error: function() {
                     console.log('Error addding task.');
             }
         });
+        $('#new_task_form')[0].reset(); // clear form input // moze przenies LATER
     });
 
-
-
-    // Change task status (mark as done or not).
-    jQuery(document).on('click', '.checkbox', function() { // Trigger on click.
+    // change task status (mark as done or not).
+    jQuery(document).on('click', '.checkbox', function() { // trigger on click.
 
         jQuery.ajax({
             url: ajaxurl,
@@ -91,15 +86,10 @@ jQuery(document).ready(function($) {
                 checked: $(this).attr('checked')
             },
             error: function() {
-
                     console.log('Error updating task status.');
-
             }
         });
-
     });
-
-
 
     // Edit task.
     jQuery(document).on('keypress', '.item-text', function(event) { // Trigger on pressing the key.
@@ -119,18 +109,11 @@ jQuery(document).ready(function($) {
                     text: text,
                 },
                 error: function() {
-
                         console.log('Error editing task.');
-
                 }
             })
-
         }
-
     });
-
-
-
     // Delete task.
     jQuery(document).on('click', '.trash', function() { // Trigger on click.
 
@@ -142,17 +125,11 @@ jQuery(document).ready(function($) {
                 task_id: $(this).attr('id')
             },
             success: function() {
-
                 refresh();
-
             },
             error: function() {
-
                     console.log('Error deleting task.');
-
             }
         })
-        
     });
-
 });
