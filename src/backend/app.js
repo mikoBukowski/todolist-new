@@ -1,9 +1,10 @@
+const { id } = require("postcss-selector-parser");
+
 jQuery(document).ready(function($) {
 
     get_tasks();
     var tasks_container = $('#tasks-container')[0]; // Get tasks container element.
 
-    // Get tasks.
     function get_tasks() {
 
         jQuery.ajax({
@@ -20,12 +21,12 @@ jQuery(document).ready(function($) {
                         foo =
                             `<li class="item list-hover">
                                 <label class="item-checkbox">
-                                    <input class="checkbox" id="${id}" type="checkbox" ${done}>
+                                    <input class="checkbox" id="${id}" type="checkbox" done="${done}">
                                 </label>
-                                <label class="item-text list-hover" id="task-${id}" 
+                                <label class="item-text list-hover" id="${id}" title="${title}" 
                                     contenteditable="true"> ${title}
                                 </label>
-                                <span class="dashicons dashicons-trash trash" id="trash-'${id}"></span>
+                                <span class="dashicons dashicons-trash trash" id="${id}"></span>
                             </li>`;
                         
                         tasks_container.innerHTML += foo;
@@ -41,11 +42,9 @@ jQuery(document).ready(function($) {
         tasks_container.innerHTML = ""; // empty the container before displaying tasks.
         get_tasks();
     }
-
-    // Add new task.
-    jQuery('#new_task_form').submit(function(event) { // trigger on submit.
+    // add
+    jQuery('#new_task_form').submit(function(event) { 
         event.preventDefault();
-        let id = new Date().getUTCMilliseconds();
 
         jQuery.ajax({
             url: ajaxurl,
@@ -53,29 +52,28 @@ jQuery(document).ready(function($) {
             data: {
                 action: 'add_tasks',
                 task: $('#new_task').val(),
-                id: id, 
+                id: new Date().getUTCMilliseconds(), 
             },
             success: function() {
-                    refresh(); // refresh on addition
-                    // console.log(taskName);
+                    $('#new_task_form')[0].reset();
+                    refresh(); 
             },
             error: function() {
                     console.log('add error');
             }
         });
-        $('#new_task_form')[0].reset(); // clear form input // moze przenies LATER
     });
 
-    // change task status (mark as done or not).
-    jQuery(document).on('click', '.checkbox', function() { // trigger on click.
+    // check
+    jQuery(document).on('click', '.checkbox', function() {
 
         jQuery.ajax({
             url: ajaxurl,
             type: 'POST',
             data: {
-                action: 'mark_task',
-                task_id: $(this).attr('id'),
-                checked: $(this).attr('checked')
+                action: 'check_tasks',
+                id: $(this).attr('id'),
+                done: $(this).attr('done')
             },
             error: function() {
                     console.log('checkbox error');
@@ -83,12 +81,11 @@ jQuery(document).ready(function($) {
         });
     });
 
-    // Edit task.
-    jQuery(document).on('keypress', '.item-text', function(event) { // Trigger on pressing the key.
-        
+    // edit 
+    jQuery(document).on('keypress', '.item-text', function(event) {
         var task_id = $(this).attr('id');
-        var text = $('#' + task_id)[0].textContent; // Get text.
-
+        var text = $('#' + task_id)[0].textContent;
+        
         if (event.keyCode == 13) { // Key 13 is Enter.
             event.preventDefault(); // Prevent new line.
 
@@ -96,9 +93,9 @@ jQuery(document).ready(function($) {
                 url: ajaxurl,
                 type: 'POST',
                 data: {
-                    action: 'edit_task',
-                    task_id: task_id,
-                    text: text,
+                    action: 'edit_tasks',
+                    id: task_id,
+                    title: text,
                 },
                 error: function() {
                         console.log('edit error');
@@ -106,18 +103,18 @@ jQuery(document).ready(function($) {
             })
         }
     });
-    // Delete task.
-    jQuery(document).on('click', '.trash', function() { // Trigger on click.
+    // remove
+    jQuery(document).on('click', '.trash', function() {
 
         jQuery.ajax({
             url: ajaxurl,
             type: 'POST',
             data: {
-                action: 'delete_task',
-                task_id: $(this).attr('id')
+                action: 'remove_tasks',
+                id: $(this).attr('id'),
             },
             success: function() {
-                refresh();
+                    refresh();
             },
             error: function() {
                     console.log('delete error');

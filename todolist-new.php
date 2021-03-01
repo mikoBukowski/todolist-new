@@ -13,16 +13,13 @@
 if (!defined('WPINC')) {
     die;
 }
-global $wpdb, $table_prefix, $db_name;
-$db_ref = 'todolist_new';
-$db_name = $table_prefix . $db_ref;
 
 class TodoList {
-    
     public function __construct() {
-        
         $this->register_hooks();
-        // $this->activate_plugin(); do wywołania przy uruchomieniu ?
+        global $wpdb, $table_prefix, $db_name;
+        $db_ref = 'todolist_new';
+        $db_name = $table_prefix . $db_ref;
     }
 
     private function register_hooks() {
@@ -39,27 +36,19 @@ class TodoList {
         register_activation_hook(__FILE__, [$this, 'activate_plugin']);
         // register_deactivation_hook(__FILE__, [$this, 'deactivate_plugin']); // pytanie czy to
     }
-    //DONE
+    
     public function get_tasks(){
-        global $table_prefix, $wpdb;
-		$tablename = 'todolist_new';
-		$todo_list_table = $table_prefix . $tablename;
-
-		// $id = get_current_user_id();
-
-		$tasks = $wpdb->get_results( "SELECT * FROM {$GLOBALS['db_name']} " );
-		$tasks = json_encode($tasks);
-
+		$data = $GLOBALS['wpdb']->get_results("SELECT * FROM {$GLOBALS['db_name']}");
+		$tasks = json_encode($data);
 		echo $tasks;
 		wp_die();
     }
-    //DONE
+    
     public function add_tasks() { 
-		
 		$data_array = array(
 			'id'    => $_POST['id'],
 			'title' => $_POST['task'],
-			'done'  => '0',
+			'done'  => false,
 		);
 
 		$GLOBALS['wpdb']->insert($GLOBALS['db_name'], $data_array);
@@ -67,11 +56,13 @@ class TodoList {
     }
 
     public function edit_tasks(){
-		$tablename = 'todolist_new';
-		$todo_list_table = $GLOBALS['table_prefix'] . $tablename;
+		// $data_array = array(
+        //     'id'    => $_POST['id'],
+        //     'title' => $_POST['title']
+        // );
 
-		$task_id = substr( $_POST['task_id'], 5 ); // Select only ID of the task in database.
-		$text = $_POST['text'];
+		$task_id = $_POST['id'];
+		$text = $_POST['title'];
 
 		$where = array(
 			'id' => $task_id
@@ -81,51 +72,45 @@ class TodoList {
 			'task' => $text
 		);
 
-		$GLOBALS['wpdb']->update( $todo_list_table, $data_array, $where );
-
+		$GLOBALS['wpdb']->update($GLOBALS['db_name'], $data_array, $where);
 		wp_die();
     }
 
     public function remove_tasks(){
-		$tablename = 'todolist_new';
-		$todo_list_table = $GLOBALS['table_prefix'] . $tablename;
+        $data_array = array(
+            'id'   => $_POST['id']
+        );
 
-		$task_id = substr( $_POST['task_id'], 6 ); // Select only ID of the task in database.
-
-		$GLOBALS['wpdb']->delete( $todo_list_table, array( 'id' => $task_id ) );
-
+		$GLOBALS['wpdb']->delete($GLOBALS['db_name'], $data_array);
 		wp_die();
     }
 
     public function check_tasks(){
-		$tablename = 'todolist_new';
-		$todo_list_table = $GLOBALS['table_prefix'] . $tablename;
 
-		$task_id = $_POST['task_id'];
-		$checked = $_POST['checked'];
-
-		$where = array(
-			'id' => $task_id
-		);
+        $id = $_POST['id'];
+		$done = $_POST['done'];
+        
+		// $where = array(
+		// 	'id' => $task_id
+		// );
 		
-		if ( $checked == 'checked' ) { // Checked.
-
+		if ( $done == true ) { 
+            
 			$data_array = array(
-				'status' => '1'
+				'status' => true
 			);
 
-			$GLOBALS['wpdb']->update( $todo_list_table, $data_array, $where );
+			$GLOBALS['wpdb']->update($GLOBALS['db_name'], $data_array, $id);
 
-		} elseif ( $checked != 'checked' ) { // Unchecked.
+		} elseif ( $done == false ) {
 
 			$data_array = array(
-				'status' => '0'
+				'status' => false
 			);
 
-			$GLOBALS['wpdb']->update( $todo_list_table, $data_array, $where );
+			$GLOBALS['wpdb']->update($GLOBALS['db_name'], $data_array, $id);
 
 		}
-		
 		wp_die();
     }
 
@@ -158,12 +143,9 @@ class TodoList {
     public function activate_plugin() {
         flush_rewrite_rules();
 
-        $table_name = 'todolist_new';
-        $dbtable_name = $table_prefix . $table_name;
-    
-        if ($GLOBALS['wpdb']->get_var( "SHOW TABLES LIKE '{$dbtable_name}'" ) != $dbtable_name) 
+        if ($GLOBALS['wpdb']->get_var( "SHOW TABLES LIKE '{$GLOBALS['db_name']}'" ) != $GLOBALS['db_name']) 
             {
-                $sql = "CREATE TABLE IF NOT EXISTS `" . $dbtable_name . "`  ( ";
+                $sql = "CREATE TABLE IF NOT EXISTS `" . $GLOBALS['db_name'] . "`  ( ";
                 $sql .= "  `id`  int(11)   NOT NULL auto_increment, ";
                 $sql .= "  `title` text NOT NULL, ";
                 $sql .= "  `done` tinyint(1) NOT NULL DEFAULT '0', ";
