@@ -95,6 +95,7 @@ jQuery(document).ready(function($) {
     });
     // tick
     jQuery(document).on('click', '.checkbox', function() {
+        let done = $(this).is(":checked"); //check whether it is checked 
 
         jQuery.ajax({
             url: ajaxurl,
@@ -102,10 +103,13 @@ jQuery(document).ready(function($) {
             data: {
                 action: 'tick',
                 id: $(this).attr('id'),
-                done: $(this).attr('done')
+                done: done 
+            },
+            success: function(){
+                console.log({done});
             },
             error: function() {
-                    console.log('checkbox error');
+                console.log('checkbox error');
             }
         });
     });
