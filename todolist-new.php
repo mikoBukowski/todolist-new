@@ -84,20 +84,17 @@ class TodoList {
 
         $done = $_POST['done'];
 
-		if ($done == true) { 
-			$data = array(
-				'done' => true
-			);
-            
-			$GLOBALS['wpdb']->update($GLOBALS['db_name'], $data, $where);
+        if ($done === 'true'){
+            $data = array(
+                'done' => true
+            );
+        } else {
+            $data = array(
+                'done' => false
+            );
+        }
 
-		} elseif ($done == false) {
-			$data = array(
-				'done' => false
-			);
-
-			$GLOBALS['wpdb']->update($GLOBALS['db_name'], $data, $where);
-		}
+        $GLOBALS['wpdb']->update($GLOBALS['db_name'], $data, $where);
 		wp_die();
     }
 

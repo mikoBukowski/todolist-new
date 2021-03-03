@@ -12,13 +12,23 @@ jQuery(document).ready(function($) {
             }),
             success: function(response) {
                     let data = JSON.parse(response);
+
                     data.forEach(function(data){
 
                         const {id, title, done} = data; 
-                        foo =
+
+                        if (done == false) {
+                            status = '';
+                        } else {
+                            status = 'checked';
+                        } 
+
+                        console.log(`BAZA DANYCH -> ${done}`);
+                        
+                        let li =
                             `<li class="item list-hover">
                                 <label class="item-checkbox">
-                                    <input class="checkbox" id="${id}" type="checkbox" done="${done}">
+                                    <input class="checkbox" id="${id}" type="checkbox" ${status}>
                                 </label>
                                 <label class="item-text list-hover" id="${id}" title="${title}"
                                 contenteditable="true"> 
@@ -27,7 +37,7 @@ jQuery(document).ready(function($) {
                                 <span class="dashicons dashicons-trash trash" id="${id} done="${done}"></span>
                             </li>`;
                         
-                        allTasks.innerHTML += foo;
+                        allTasks.innerHTML += li;
                     });
             },
             error: function() {                  
@@ -95,8 +105,7 @@ jQuery(document).ready(function($) {
     });
     // tick
     jQuery(document).on('click', '.checkbox', function() {
-        let done = $(this).is(":checked"); //check whether it is checked 
-
+        let done = $(this).is(":checked"); //see whether it is checked 
         jQuery.ajax({
             url: ajaxurl,
             type: 'POST',
