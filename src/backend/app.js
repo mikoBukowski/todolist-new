@@ -1,17 +1,14 @@
-const { id } = require("postcss-selector-parser");
-
 jQuery(document).ready(function($) {
 
-    get_tasks();
-    var tasks_container = $('#tasks-container')[0]; // Get tasks container element.
+    getAll();
+    var allTasks = $('#tasks-container')[0];
 
-    function get_tasks() {
-
+    function getAll() {
         jQuery.ajax({
             url: ajaxurl,
             type: 'POST',
             data: ({
-                action: 'get_tasks'
+                action: 'read'
             }),
             success: function(response) {
                     let data = JSON.parse(response);
@@ -23,13 +20,14 @@ jQuery(document).ready(function($) {
                                 <label class="item-checkbox">
                                     <input class="checkbox" id="${id}" type="checkbox" done="${done}">
                                 </label>
-                                <label class="item-text list-hover" id="${id}" title="${title}" 
-                                    contenteditable="true"> ${title}
+                                <label class="item-text list-hover" id="${id}" title="${title}"
+                                contenteditable="true"> 
+                                     ${title}
                                 </label>
-                                <span class="dashicons dashicons-trash trash" id="${id}"></span>
+                                <span class="dashicons dashicons-trash trash" id="${id} done="${done}"></span>
                             </li>`;
                         
-                        tasks_container.innerHTML += foo;
+                        allTasks.innerHTML += foo;
                     });
             },
             error: function() {                  
@@ -37,12 +35,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
-    function refresh() {
-        tasks_container.innerHTML = ""; // empty the container before displaying tasks.
-        get_tasks();
-    }
-    // add
+    // create
     jQuery('#new_task_form').submit(function(event) { 
         event.preventDefault();
 
@@ -50,7 +43,7 @@ jQuery(document).ready(function($) {
             url: ajaxurl,
             type: 'POST',
             data: {
-                action: 'add_tasks',
+                action: 'create',
                 task: $('#new_task').val(),
                 id: new Date().getUTCMilliseconds(), 
             },
@@ -63,54 +56,33 @@ jQuery(document).ready(function($) {
             }
         });
     });
-
-    // check
-    jQuery(document).on('click', '.checkbox', function() {
-
-        jQuery.ajax({
-            url: ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'check_tasks',
-                id: $(this).attr('id'),
-                done: $(this).attr('done')
-            },
-            error: function() {
-                    console.log('checkbox error');
-            }
-        });
-    });
-
-    // edit 
+    // update
     jQuery(document).on('keypress', '.item-text', function(event) {
-        var task_id = $(this).attr('id');
-        var text = $('#' + task_id)[0].textContent;
-        
-        if (event.keyCode == 13) { // Key 13 is Enter.
-            event.preventDefault(); // Prevent new line.
+        if (event.keyCode == 13) {
+            event.preventDefault(); 
 
             jQuery.ajax({
                 url: ajaxurl,
                 type: 'POST',
                 data: {
-                    action: 'edit_tasks',
-                    id: task_id,
-                    title: text,
+                    action: 'update',
+                    id: $(this).attr('id'),
+                    title: $(this).text().trim(),
                 },
                 error: function() {
-                        console.log('edit error');
+                        console.log('update error');
                 }
             })
         }
     });
-    // remove
+    // delete
     jQuery(document).on('click', '.trash', function() {
 
         jQuery.ajax({
             url: ajaxurl,
             type: 'POST',
             data: {
-                action: 'remove_tasks',
+                action: 'delete',
                 id: $(this).attr('id'),
             },
             success: function() {
@@ -121,4 +93,25 @@ jQuery(document).ready(function($) {
             }
         })
     });
+    // tick
+    jQuery(document).on('click', '.checkbox', function() {
+
+        jQuery.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'tick',
+                id: $(this).attr('id'),
+                done: $(this).attr('done')
+            },
+            error: function() {
+                    console.log('checkbox error');
+            }
+        });
+    });
+
+    function refresh() {
+        allTasks.innerHTML = "";
+        getAll();
+    }
 });

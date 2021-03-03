@@ -26,76 +26,67 @@ class TodoList {
         add_action('admin_menu', [$this, 'add_admin_menu']);
         add_action('admin_enqueue_scripts', [$this, 'frontend_script']);
 		add_action('admin_enqueue_scripts', [$this, 'backend_script']);
-
-        add_action('wp_ajax_get_tasks', [$this, 'get_tasks']);
-        add_action('wp_ajax_add_tasks', [$this, 'add_tasks']);
-        add_action('wp_ajax_edit_tasks', [$this, 'edit_tasks']);
-        add_action('wp_ajax_remove_tasks', [$this, 'remove_tasks']);
-        add_action('wp_ajax_check_tasks', [$this, 'check_tasks']);
+        
+        add_action('wp_ajax_create', [$this, 'create']);
+        add_action('wp_ajax_read', [$this, 'read']);
+        add_action('wp_ajax_update', [$this, 'update']);
+        add_action('wp_ajax_delete', [$this, 'delete']);
+        add_action('wp_ajax_tick', [$this, 'tick']);
         
         register_activation_hook(__FILE__, [$this, 'activate_plugin']);
-        // register_deactivation_hook(__FILE__, [$this, 'deactivate_plugin']); // pytanie czy to
+        register_deactivation_hook(__FILE__, [$this, 'deactivate_plugin']);
     }
     
-    public function get_tasks(){
+    public function create() { 
+		$data = array(
+			'id'    => $_POST['id'],
+			'title' => $_POST['task'],
+			'done'  => false,
+		);
+
+		$GLOBALS['wpdb']->insert($GLOBALS['db_name'], $data);
+		wp_die();
+    }
+
+    public function read(){
 		$data = $GLOBALS['wpdb']->get_results("SELECT * FROM {$GLOBALS['db_name']}");
 		$tasks = json_encode($data);
 		echo $tasks;
 		wp_die();
     }
     
-    public function add_tasks() { 
-		$data_array = array(
-			'id'    => $_POST['id'],
-			'title' => $_POST['task'],
-			'done'  => false,
-		);
-
-		$GLOBALS['wpdb']->insert($GLOBALS['db_name'], $data_array);
-		wp_die();
-    }
-
-    public function edit_tasks(){
-		// $data_array = array(
-        //     'id'    => $_POST['id'],
-        //     'title' => $_POST['title']
-        // );
-
-		$task_id = $_POST['id'];
-		$text = $_POST['title'];
-
+    public function update(){
 		$where = array(
-			'id' => $task_id
+			'id' => $_POST['id']
 		);
 
-		$data_array = array(
-			'task' => $text
+		$data = array(
+			'title' => $_POST['title']
 		);
 
-		$GLOBALS['wpdb']->update($GLOBALS['db_name'], $data_array, $where);
+		$GLOBALS['wpdb']->update($GLOBALS['db_name'], $data, $where);
 		wp_die();
     }
 
-    public function remove_tasks(){
-        $data_array = array(
+    public function delete(){
+        $data = array(
             'id'   => $_POST['id']
         );
 
-		$GLOBALS['wpdb']->delete($GLOBALS['db_name'], $data_array);
+		$GLOBALS['wpdb']->delete($GLOBALS['db_name'], $data);
 		wp_die();
     }
 
-    public function check_tasks(){
+    public function tick(){
+		$where = array(
+			'id' => $_POST['id']
+		);
 
-        $id = $_POST['id'];
-		$done = $_POST['done'];
-        
-		// $where = array(
-		// 	'id' => $task_id
-		// );
-		
+        $data = array(
+            'done' => $_POST['done']
+        );
+
 		if ( $done == true ) { 
-            
 			$data_array = array(
 				'status' => true
 			);
@@ -103,13 +94,11 @@ class TodoList {
 			$GLOBALS['wpdb']->update($GLOBALS['db_name'], $data_array, $id);
 
 		} elseif ( $done == false ) {
-
 			$data_array = array(
 				'status' => false
 			);
 
-			$GLOBALS['wpdb']->update($GLOBALS['db_name'], $data_array, $id);
-
+			$GLOBALS['wpdb']->update($GLOBALS['db_name'], $data, $where);
 		}
 		wp_die();
     }
@@ -156,8 +145,8 @@ class TodoList {
             }
     }       
 
-    // public function deactivate_plugin() {
-    //     flush_rewrite_rules();
-    // }
+    public function deactivate_plugin() {
+        flush_rewrite_rules();
+    }
 }
 new TodoList();
