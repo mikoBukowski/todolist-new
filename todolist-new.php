@@ -15,7 +15,7 @@ if (!defined('WPINC')) {
 }
 
 class TodoList {
-    public function __construct() {
+    function __construct() {
         $this->register_hooks();
         global $wpdb, $table_prefix, $db_name;
         $db_ref = 'todolist_new';
@@ -37,7 +37,7 @@ class TodoList {
         register_deactivation_hook(__FILE__, [$this, 'deactivate_plugin']);
     }
     
-    public function create() { 
+    function create() { 
 		$data = array(
 			'id'    => $_POST['id'],
 			'title' => $_POST['task'],
@@ -48,14 +48,14 @@ class TodoList {
 		wp_die();
     }
 
-    public function read(){
+    function read(){
 		$data = $GLOBALS['wpdb']->get_results("SELECT * FROM {$GLOBALS['db_name']}");
 		$tasks = json_encode($data);
 		echo $tasks;
 		wp_die();
     }
     
-    public function update(){
+    function update(){
 		$where = array(
 			'id' => $_POST['id']
 		);
@@ -68,7 +68,7 @@ class TodoList {
 		wp_die();
     }
 
-    public function delete(){
+    function delete(){
         $data = array(
             'id'   => $_POST['id']
         );
@@ -77,7 +77,7 @@ class TodoList {
 		wp_die();
     }
 
-    public function tick(){
+    function tick(){
 		$where = array(
 			'id' => $_POST['id']
 		);
@@ -98,7 +98,7 @@ class TodoList {
 		wp_die();
     }
 
-    public function add_admin_menu() {
+    function add_admin_menu() {
         add_menu_page(
             'todolist-new',
             'todolist-new',
@@ -110,21 +110,21 @@ class TodoList {
         );
     }
     
-    public function frontend_script() {
+    function frontend_script() {
         wp_register_script( 'frontend-script', plugins_url( 'assets/js/frontend.js', __FILE__ ), [ 'jquery' ], '11272018' );
 		wp_enqueue_script( 'frontend-script' );
     }
 
-    public function backend_script() {
+    function backend_script() {
         wp_register_script( 'backend-script', plugins_url( 'assets/js/backend.js', __FILE__ ), [ 'jquery' ], '11272018' );
 		wp_enqueue_script( 'backend-script' );
     }
 
-    public function display_plugin_page() {
+    function display_plugin_page() {
         require_once 'src/frontend/template.php';
     }
 
-    public function activate_plugin() {
+    function activate_plugin() {
         flush_rewrite_rules();
 
         if ($GLOBALS['wpdb']->get_var( "SHOW TABLES LIKE '{$GLOBALS['db_name']}'" ) != $GLOBALS['db_name']) 
@@ -140,7 +140,7 @@ class TodoList {
             }
     }       
 
-    public function deactivate_plugin() {
+    function deactivate_plugin() {
         flush_rewrite_rules();
     }
 }

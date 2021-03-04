@@ -1,2 +1,2 @@
 # todolist-new
-todolist plugin for wordpress with ajax functionality 
+Simple CRUD based plugin to manage your tasks. 
